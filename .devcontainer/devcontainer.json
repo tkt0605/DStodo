@@ -8,7 +8,7 @@
     //     "dockerfile": "../backend/Dockerfile.env"
     // },
     "service": "web",
-    "workspaceFolder": "../server",
+    "workspaceFolder": "/server",
     "extensions":[
         "ms-python.python",
         "ms-azuretools.vscode-docker",
