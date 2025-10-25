@@ -9,11 +9,21 @@ from rest_framework_simplejwt.views import (
     TokenBlacklistView
 )
 from todo import views
+from views import (
+    LoginAPI,
+    RegisterAPI,
+    LogoutAPI,
+    CustomUserViewSet,
+    TodoItemViewSet
+)
 router = routers.DefaultRouter()
 urlpatterns = [
     path('token/', TokenObtainPairView.as_view(), name='token-login'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token-refresh'),
     path('token/logout/', TokenBlacklistView.as_view(), name='token-logout'),
+    path('login/', LoginAPI.as_view(), name='login'),
+    path('register/', RegisterAPI.as_view(), name="register"),
+    path('logout/', LogoutAPI.as_view(), name='logout'),
     path('', include(router.urls))
 ]
 if settings.DEBUG:
