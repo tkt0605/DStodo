@@ -1,0 +1,46 @@
+{
+    "name": "DStodo-Backend",
+    "dockerComposeFile":[
+        "../server/docker-compose.yml"
+    ] ,
+    // "build": {
+    //     "context": "../backend",
+    //     "dockerfile": "../backend/Dockerfile.env"
+    // },
+    "service": "web",
+    "workspaceFolder": "../server",
+    "extensions":[
+        "ms-python.python",
+        "ms-azuretools.vscode-docker",
+        "ms-python.vscode",
+        "ms-python.isort",
+        "ms-python.black-formatter",
+        "ms-python.pylance",
+    ],
+    "settings": {
+        "python.pythonPath": "/usr/local/bin/python3",
+        "python.formatting.provider": "black",
+        "python.linting.enabled": true,
+        "python.linting.flake8Enabled": true,
+        "python.linting.mypyEnabled": true,
+        "python.analysis.typeCheckingMode": "basic",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+        },
+        "terminal.integrated.defaultProfile.linux": "/bin/bash"
+    },
+    "remoteUser": "vscode",
+    "remoteEnv": {
+        "PYTHONPATH": "/server"
+    },
+    "runServices": [
+        "web"
+    ],
+    "shutdownAction": "stopCompose",
+    "initializeCommand": "echo 'Initializing the development container...'",
+    "postCreateCommand": "pip install --no-cache-dir -r requirements.txt",
+    "mounts": [
+      "source=${localWorkspaceFolder},target=/workspace,type=bind"
+    ]
+}
