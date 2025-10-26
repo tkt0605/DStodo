@@ -8,8 +8,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenBlacklistView
 )
-from todo import views
-from views import (
+from .views import (
     LoginAPI,
     RegisterAPI,
     LogoutAPI,

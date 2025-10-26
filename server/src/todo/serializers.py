@@ -26,7 +26,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True, allow_blank=False)
-    password = serializers.CharField(write_only=True, reqiured = True, allow_blank=False)
+    password = serializers.CharField(write_only=True, required=True, allow_blank=False)
 
     def validate(self, data):
         email = data['email']
