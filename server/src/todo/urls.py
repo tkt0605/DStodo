@@ -17,6 +17,7 @@ from views import (
     TodoItemViewSet
 )
 router = routers.DefaultRouter()
+router.register(r"users", CustomUserViewSet, basename="user")
 urlpatterns = [
     path('token/', TokenObtainPairView.as_view(), name='token-login'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token-refresh'),
