@@ -7,91 +7,104 @@
 
 import Foundation
 
-struct AUthAPI {
+struct AuthAPI {
     static let baseURL = "http://localhost:8000/api"
-
-    static func login(email: String, password: String, completion: @escaping (Result<AuthToken, Error>) -> Void){
-        guard let url = URL(String: "\(baseURL)/login/") else { return }
+    static func loginAsync(email: String, password: String, completion: @escaping (Result<AuthToken, Error>) -> Void) {
+        guard let url = URL(string: "\(baseURL)/login/") else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        let LoginRequest = LoginRequest(email:email, password:password)
-        guard let httpBody = try? JSONEncoder().encode(LoginRequest) else { return }
+
+        let loginRequest = LoginRequest(email: email, password: password)
+        guard let httpBody = try? JSONEncoder().encode(loginRequest) else { return }
         request.httpBody = httpBody
 
-        URLSession.shared.dataTask(with: request) {data, reqponse, error in 
+        URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
                 completion(.failure(error))
                 return
             }
-            guard let data = data else { return }
-            do {
-                let token = try JSONEncoder().decode(AuthToken.self, from: data)
-                completion(.seccess(token))
-            }catch let decodeError {
-                completion(.failure(error))
-            }
-        }.resume()
-    }
-
-    static func signup(email: String, password: String, nickname: String, completion: @escaping(Result<AuthToken, Error> -> Void)){
-        guard let url = URL(String: "\(baseURL)/register/") else {return}
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        let SignupRequest = SignupRequest(email: email, password: password, nickname: nickname)
-        guard let httpBody = try? JSONEncoder().encode(SignupRequest) else { return }
-        request.httpBody = httpBody
-
-        URLSession.shared.dataTask(with: request) {data, response, error in 
-            if let error = error {
-                completion(.failure(error))
+            guard let data = data else {
+                completion(.failure(URLError(.badServerResponse)))
                 return
             }
-            guard let data  = data else {return}
+
             do {
-                let token = try JSONEncoder().decode(AuthToken.self, from:data)
+                let token = try JSONDecoder().decode(AuthToken.self, from: data)
                 completion(.success(token))
-            }catch let decodeError {
+            } catch {
                 completion(.failure(error))
             }
         }.resume()
     }
-
-    static func CreateTodoItem(
-        id: UUID, 
-        title: String, 
-        nemo: String, 
-        is_completed: Bool, 
-        created_at: String, 
-        updated_at: String,
-
-        completion: @escaping(Result<TodoItem, Error> -> Void)
-    ){
-        guard let url = URL(String: "\(baseURL)/todo/create/") else { return }
+    static func signup(email: String, password: String, nickname: String, completion: @escaping(Result<AuthToken, Error>) -> Void){
+        guard let url = URL(string: "\(baseURL)/register/") else {return}
         var request = URLRequest(url: url)
-
-        reqponse.httpMethod = "POST"
+        request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        let TodoItem = TodoItem(
-            id: id, 
-            title: title, 
-            nemo: nemo, 
-            is_completed: is_completed,
-            created_at: created_at,
-            updated_at: updated_at
-        )
-        guard let httpBody = try? JSONEncoder().encode(TodoItem) else { return }
+        
+        let SignupRequest = SignupRequest(email: email, password: password, nickname: nickname)
+        guard let httpBody = try? JSONEncoder().encode(SignupRequest) else {return}
         request.httpBody = httpBody
-        URLSession.shared.dataTask(with: request){data, reqponse, error in
-            do {
-                let todoitem = JSONEncoder().decode(TodoItem.self, from: data)
-                completion(.success(todoitem))
-            } catch error {
+        
+        URLSession.shared.dataTask(with: request) {data, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            guard let data = data else {
+                completion(.failure(URLError(.badServerResponse)))
+                return
+            }
+            
+            do{
+                let token = try JSONDecoder().decode(AuthToken.self, from: data)
+                completion(.success(token))
+            }catch{
                 completion(.failure(error))
             }
         }.resume()
     }
-
+//    static func CreateTodoItem(
+//        id: UUID, 
+//        title: String, 
+//        nemo: String, 
+//        is_completed: Bool, 
+//        created_at: String, 
+//        updated_at: String,
+//
+//        completion: @escaping(Result<TodoItem, Error>) -> Void
+//    ){
+//        guard let url = URL(string: "\(baseURL)/todo/create/") else { return }
+//        var request = URLRequest(url: url)
+//
+//        request.httpMethod = "POST"
+//        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+//        let todoItem = TodoItem(
+//            id: id,
+//            title: title, 
+//            nemo: nemo, 
+//            is_completed: is_completed,
+//            created_at: created_at,
+//            updated_at: updated_at
+//        )
+//        guard let httpBody = try? JSONEncoder().encode(todoItem) else { return }
+//        request.httpBody = httpBody
+//        URLSession.shared.dataTask(with: request){data, response, error in
+//            if let error = error {
+//                completion(.failure(error))
+//                return
+//            }
+//            guard let data  = data else {
+//                completion(.failure(URLError(.badServerResponse)))
+//                return
+//            }
+//            do {
+//                let todoitem = JSONDecoder().decode(TodoItem.self, from: data)
+//                completion(.success(todoitem))
+//            } catch let error{
+//                completion(.failure(error))
+//            }
+//        }.resume()
+//    }
 }

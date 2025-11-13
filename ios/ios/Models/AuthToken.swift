@@ -6,8 +6,8 @@
 //
 
 import Foundation
-
-struct TokenRefresh: Codable{
+nonisolated
+struct AuthToken: Codable, Sendable{
     let access: String
     let refresh: String
 }
