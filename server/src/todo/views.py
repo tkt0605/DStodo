@@ -27,6 +27,8 @@ from .models import (
     TodoItem
 )
 from typing import cast
+from rest_framework import generics, status
+
 # Create your views here.
 def index(request):
     return render(request, "index.html")
@@ -34,6 +36,15 @@ class RegisterAPI(CreateAPIView):
     permission_classes = [AllowAny]
     serializer_class = RegisterSerializer
     queryset = CustomUser.objects.all()
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data = request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            "access": str(refresh.access_token),
+            "refresh": str(refresh)
+        }, status=status.HTTP_201_CREATED)
 class LoginAPI(APIView):
     permission_classes = [AllowAny]
     def post(self, request):

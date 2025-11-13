@@ -17,13 +17,15 @@ class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     class Meta:
         model = CustomUser
-        fields = ('id', 'email', 'password')
+        fields = ('id', 'email', 'password', "nickname")
     def create(self, validated_data):
-        user = user_manager.create_user(
+        user = CustomUser.objects.create_user(
             email=validated_data['email'],
             password=validated_data['password'],
+            nickname=validated_data['nickname']
         )
         return user
+    
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True, allow_blank=False)
     password = serializers.CharField(write_only=True, required=True, allow_blank=False)
@@ -38,6 +40,7 @@ class LoginSerializer(serializers.Serializer):
             return user
         else:
             raise serializers.ValidationError(('メールアドレスまたはパスワードが正しくありません。'))
+        
 class LogoutSerializer(serializers.Serializer):
     refresh = serializers.CharField()
     def validate(self, data):
@@ -45,11 +48,13 @@ class LogoutSerializer(serializers.Serializer):
         return data
     def save(self, **kwargs):
         RefreshToken(self.token).blacklist()
+
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ('id', 'email', 'avater', 'first_name', 'last_name', 'nickname')
         read_only_fields = ('id', 'avatar', 'date_joined')
+
 class CustomUserDetairsSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -67,6 +72,7 @@ class TodoItemSerializer(serializers.ModelSerializer):
         model = TodoItem
         fields = ('id', 'user', 'title', 'nemo', 'is_completed', 'created_at', 'updated_at')
         read_only_fields = ('id', 'created_at', 'updated_at')
+
 class TodoItemReadSerializer(serializers.ModelSerializer):
     user = CustomUserSerializer(read_only=True)
     class Meta:
