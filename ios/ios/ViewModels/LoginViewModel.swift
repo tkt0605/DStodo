@@ -14,7 +14,7 @@ class LoginViewModel: ObservableObject {
     @Published var password = ""
     @Published var errorMessage: String?
     @Published var isLoading = false
-    
+    @Published var loginSuccess = false
     func login() async {
         DispatchQueue.main.async {
             self.isLoading = true
@@ -30,6 +30,7 @@ class LoginViewModel: ObservableObject {
                     KeychainHelper.shared.save(token.access, service: "access-token", account: "user")
                     KeychainHelper.shared.save(token.refresh, service: "refresh-token", account: "user")
                     print("ログイン成功: \(token.access)")
+                    self.loginSuccess = true
                     // TODO: トップ画面遷移など
                     //失敗後の処理
                 case .failure(let error):

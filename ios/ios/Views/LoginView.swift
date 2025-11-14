@@ -10,17 +10,22 @@ import SwiftUI
 struct LoginView: View {
     @StateObject private var loginModel = LoginViewModel()
     var body: some View {
+        NavigationStack{
             VStack(spacing: 24){
-                Text("ログイン")
+                Text("おかえりなさい")
                     .font(.largeTitle)
                     .bold()
                 TextField("メールアドレス", text: $loginModel.email)
                     .autocorrectionDisabled(true)
                     .textContentType(.emailAddress)
+                    .textInputAutocapitalization(.never)
+                    .background(Color(.secondarySystemBackground))
                     .padding()
                     .cornerRadius(8)
                 SecureField("パスワード", text: $loginModel.password)
                     .padding()
+                    .textInputAutocapitalization(.never)
+                    .background(Color(.secondarySystemBackground))
                     .cornerRadius(8)
                 
                 if let error = loginModel.errorMessage {
@@ -32,7 +37,7 @@ struct LoginView: View {
                     if loginModel.isLoading{
                         ProgressView()
                     }else{
-                        Text("登録")
+                        Text("ログイン")
                             .foregroundColor(.white)
                             .padding()
                             .frame(maxWidth: .infinity)
@@ -40,9 +45,17 @@ struct LoginView: View {
                             .cornerRadius(8)
                     }
                 }
-                .disabled(loginModel.isLoading)
+                //                .disabled(loginModel.isLoading)
+                NavigationLink("新規登録はこちら。", destination: SignupView())
+                    .foregroundColor(.green)
+                    .padding(.top, 8)
+                    .font(.headline)
+                Spacer()
             }
             .padding()
-            .navigationTitle("新規登録")
+            .navigationDestination(isPresented: $loginModel.loginSuccess){
+                TodoListView()
+            }
+        }
     }
 }

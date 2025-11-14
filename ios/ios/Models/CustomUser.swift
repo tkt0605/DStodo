@@ -15,7 +15,7 @@ struct CustomUser: Identifiable, Codable{
     let avatar: String?
     let icon: String?
     let nickname: String?
-    
+
     var FullName: String{
         return [first_name, last_name].compactMap { $0 }.joined(separator: " ")
     }

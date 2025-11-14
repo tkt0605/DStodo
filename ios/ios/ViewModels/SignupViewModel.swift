@@ -15,7 +15,7 @@ class SignupViewModel: ObservableObject{
     @Published var nickname = ""
     @Published var errorMessage: String?
     @Published var isLoading = false
-    
+    @Published var signupSuccess = false
     func signup() async{
         DispatchQueue.main.async{
             self.isLoading = true
@@ -29,6 +29,7 @@ class SignupViewModel: ObservableObject{
                     KeychainHelper.shared.save(token.access, service: "access-token", account: "user")
                     KeychainHelper.shared.save(token.refresh, service: "refresh-token", account: "user")
                     print("サインアップ成功: \(token.access)")
+                    self.signupSuccess = true
                 case .failure(let error):
                     self.errorMessage = "サインアップ失敗: \(error.localizedDescription)"
                 }

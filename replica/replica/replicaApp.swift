@@ -1,20 +1,20 @@
 //
-//  iosApp.swift
-//  ios
+//  replicaApp.swift
+//  replica
 //
-//  Created by 駒田隆人 on 2025/10/24.
+//  Created by 駒田隆人 on 2025/11/14.
 //
 
 import SwiftUI
 import CoreData
 
 @main
-struct iosApp: App {
+struct replicaApp: App {
     let persistenceController = PersistenceController.shared
 
     var body: some Scene {
         WindowGroup {
-            LoginView()
+            ContentView()
         }
     }
 }
